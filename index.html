@@ -1,5 +1,1898 @@
-<html>
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PROKYDAL — Indie Game Development & Studio</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* ==========================================================================
+           1. CORE DESIGN SYSTEM & VARIABLES — PROKYDAL BRANDING
+           ========================================================================== */
+        :root {
+            --bg-primary: #080c14;
+            --bg-secondary: #0f172a;
+            --bg-card: rgba(15, 23, 42, 0.75);
+            --bg-glass: rgba(255, 255, 255, 0.03);
+            --border-glass: rgba(255, 255, 255, 0.09);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-primary: #6366f1; /* PROKYDAL Neon Electric Indigo */
+            --accent-secondary: #06b6d4; /* PROKYDAL Cyan Pulse */
+            --accent-glow: rgba(99, 102, 241, 0.45);
+            --accent-green: #10b981;
+            --nav-bg: rgba(8, 12, 20, 0.88);
+            --card-shadow: 0 12px 35px -10px rgba(0, 0, 0, 0.6);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --radius-lg: 18px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --bg-card: rgba(255, 255, 255, 0.85);
+            --bg-glass: rgba(0, 0, 0, 0.025);
+            --border-glass: rgba(0, 0, 0, 0.08);
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --accent-primary: #4f46e5;
+            --accent-secondary: #0891b2;
+            --accent-glow: rgba(79, 70, 229, 0.25);
+            --nav-bg: rgba(248, 250, 252, 0.88);
+            --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Reset & Base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            transition: background-color 0.4s ease, color 0.4s ease;
+        }
+
+        h1, h2, h3, h4, .logo {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Particle Canvas Overlay */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* ==========================================================================
+           2. HEADER & NAVIGATION — PROKYDAL LOGO
+           ========================================================================== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            background: var(--nav-bg);
+            border-bottom: 1px solid var(--border-glass);
+            transition: var(--transition);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 85px;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--text-main);
+            text-decoration: none;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo i {
+            color: var(--accent-secondary);
+            font-size: 1.5rem;
+        }
+
+        .logo span {
+            color: var(--accent-primary);
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--text-main);
+        }
+
+        .nav-links a.active::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 2px;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        #theme-toggle {
+            background: var(--bg-glass);
+            border: 1px solid var(--border-glass);
+            color: var(--text-main);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            transition: var(--transition);
+        }
+
+        #theme-toggle:hover {
+            transform: scale(1.08);
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        .mobile-toggle {
+            display: none;
+            font-size: 1.5rem;
+            color: var(--text-main);
+            cursor: pointer;
+        }
+
+        /* ==========================================================================
+           3. HERO SECTION
+           ========================================================================== */
+        .hero-section {
+            padding: 180px 0 100px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            min-height: 90vh;
+        }
+
+        .hero-container {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 18px;
+            border-radius: 30px;
+            background: rgba(99, 102, 241, 0.14);
+            border: 1px solid rgba(99, 102, 241, 0.35);
+            color: var(--accent-primary);
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 1.5rem;
+        }
+
+        .badge i {
+            font-size: 0.85rem;
+            color: var(--accent-secondary);
+        }
+
+        .hero-content h1 {
+            font-size: 3.6rem;
+            font-weight: 900;
+            line-height: 1.15;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-content h1 span {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-intro {
+            font-size: 1.15rem;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            max-width: 600px;
+        }
+
+        .hero-btns {
+            display: flex;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-primary), #4f46e5);
+            color: #fff;
+            box-shadow: 0 10px 20px -5px var(--accent-glow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px -5px var(--accent-glow);
+        }
+
+        .btn-secondary {
+            background: var(--bg-glass);
+            border: 1px solid var(--border-glass);
+            color: var(--text-main);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--text-muted);
+            transform: translateY(-3px);
+        }
+
+        .hero-visual {
+            position: relative;
+            display: flex;
+            justify-content: center;
+        }
+
+        .godot-card {
+            width: 100%;
+            max-width: 380px;
+            aspect-ratio: 1;
+            border-radius: var(--radius-lg);
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            backdrop-filter: blur(20px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+        }
+
+        .godot-icon {
+            font-size: 5.5rem;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-12px); }
+        }
+
+        .godot-tag {
+            font-size: 1.2rem;
+            font-weight: 800;
+            letter-spacing: 3px;
+            color: var(--text-main);
+        }
+
+        .godot-subtext {
+            font-size: 0.85rem;
+            color: var(--accent-secondary);
+            margin-top: 4px;
+            font-weight: 600;
+        }
+
+        /* ==========================================================================
+           4. SECTIONS COMMON STYLES
+           ========================================================================== */
+        section {
+            padding: 100px 0;
+        }
+
+        .section-title {
+            font-size: 2.4rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 3.5rem;
+            position: relative;
+        }
+
+        .section-title span {
+            color: var(--accent-primary);
+        }
+
+        /* ==========================================================================
+           5. ABOUT ME SECTION — PROKYDAL PHILOSOPHY
+           ========================================================================== */
+        .about-container {
+            display: grid;
+            grid-template-columns: 0.9fr 1.1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .about-image {
+            position: relative;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            border: 1px solid var(--border-glass);
+            box-shadow: var(--card-shadow);
+            background: var(--bg-card);
+            padding: 1rem;
+        }
+
+        .avatar-placeholder {
+            width: 100%;
+            height: 380px;
+            border-radius: var(--radius-md);
+            background: linear-gradient(135deg, #1e1b4b, #0f172a);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-primary);
+            position: relative;
+        }
+
+        .avatar-placeholder i {
+            font-size: 6rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+
+        .avatar-placeholder h3 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--text-main);
+            letter-spacing: 1px;
+        }
+
+        .avatar-placeholder span {
+            color: var(--accent-secondary);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .about-content h2 {
+            font-size: 2.3rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .about-content h2 span {
+            color: var(--accent-primary);
+        }
+
+        .about-content p {
+            color: var(--text-muted);
+            margin-bottom: 1.2rem;
+            font-size: 1.05rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .stat-item {
+            background: var(--bg-glass);
+            border: 1px solid var(--border-glass);
+            padding: 1.2rem;
+            border-radius: var(--radius-md);
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--accent-primary);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* ==========================================================================
+           6. SKILLS SECTION
+           ========================================================================== */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 2rem;
+        }
+
+        .skill-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            padding: 2.2rem 1.8rem;
+            border-radius: var(--radius-lg);
+            backdrop-filter: blur(16px);
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .skill-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--accent-primary);
+            box-shadow: 0 15px 30px -10px var(--accent-glow);
+        }
+
+        .skill-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: var(--radius-md);
+            background: rgba(99, 102, 241, 0.15);
+            color: var(--accent-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .skill-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .skill-card ul {
+            list-style: none;
+        }
+
+        .skill-card li {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 0.7rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .skill-card li::before {
+            content: '▹';
+            color: var(--accent-secondary);
+            font-weight: bold;
+        }
+
+        /* ==========================================================================
+           7. FEATURED GAMES SHOWCASE
+           ========================================================================== */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .project-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            backdrop-filter: blur(16px);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .project-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--accent-primary);
+            box-shadow: var(--card-shadow), 0 0 20px var(--accent-glow);
+        }
+
+        .project-img {
+            height: 200px;
+            background: #1e1b4b;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+        }
+
+        .project-img-demo {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba(30, 27, 75, 0.9), rgba(15, 23, 42, 0.95));
+            transition: var(--transition);
+        }
+
+        .project-card:hover .project-img-demo {
+            transform: scale(1.05);
+        }
+
+        .project-img-demo i {
+            font-size: 3.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--accent-secondary);
+        }
+
+        .project-info {
+            padding: 1.8rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .project-info h3 {
+            font-size: 1.35rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .project-tag {
+            display: inline-block;
+            align-self: flex-start;
+            padding: 4px 12px;
+            border-radius: 20px;
+            background: rgba(6, 182, 212, 0.15);
+            color: var(--accent-secondary);
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .project-info p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+
+        .project-link {
+            text-decoration: none;
+            color: var(--accent-primary);
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 0.95rem;
+        }
+
+        .project-link:hover {
+            color: var(--accent-secondary);
+            gap: 12px;
+        }
+
+        /* ==========================================================================
+           8. INTERACTIVE GAME MODAL & CANVAS VIEWPORT
+           ========================================================================== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(5, 8, 15, 0.88);
+            backdrop-filter: blur(14px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal-container {
+            width: 90%;
+            max-width: 800px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+            position: relative;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-container {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            padding: 1.2rem 1.8rem;
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-glass);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            font-size: 1.3rem;
+            color: var(--text-main);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .modal-close:hover {
+            color: #ef4444;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .game-viewport-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 700px;
+            aspect-ratio: 16/9;
+            background: #000;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            border: 2px solid var(--border-glass);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+        }
+
+        #game-canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .game-controls-bar {
+            width: 100%;
+            max-width: 700px;
+            margin-top: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-glass);
+            padding: 0.8rem 1.2rem;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-glass);
+        }
+
+        .controls-info {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .controls-info kbd {
+            background: rgba(255,255,255,0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: var(--text-main);
+            font-family: monospace;
+        }
+
+        .game-actions {
+            display: flex;
+            gap: 0.8rem;
+        }
+
+        /* ==========================================================================
+           9. EXPERIENCE TIMELINE — PROKYDAL MILESTONES
+           ========================================================================== */
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 20px;
+            height: 100%;
+            width: 2px;
+            background: var(--border-glass);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 60px;
+            margin-bottom: 2.5rem;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: 11px;
+            top: 5px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--accent-primary);
+            border: 4px solid var(--bg-primary);
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        .timeline-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            padding: 1.8rem;
+            border-radius: var(--radius-lg);
+            backdrop-filter: blur(16px);
+        }
+
+        .timeline-date {
+            display: inline-block;
+            font-size: 0.85rem;
+            color: var(--accent-secondary);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-content h3 {
+            font-size: 1.25rem;
+            color: var(--text-main);
+        }
+
+        .timeline-content h4 {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .timeline-content ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .timeline-content li {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+            position: relative;
+            padding-left: 18px;
+        }
+
+        .timeline-content li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--accent-primary);
+        }
+
+        /* ==========================================================================
+           10. SERVICES & OBJECTIVE
+           ========================================================================== */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .service-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            padding: 2.2rem;
+            border-radius: var(--radius-lg);
+            backdrop-filter: blur(16px);
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .service-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--accent-secondary);
+            box-shadow: 0 15px 30px -10px rgba(6, 182, 212, 0.2);
+        }
+
+        .service-icon {
+            font-size: 2.8rem;
+            color: var(--accent-secondary);
+            margin-bottom: 1.2rem;
+        }
+
+        .service-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+
+        .service-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .objective-box {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(6, 182, 212, 0.06));
+            border: 1px solid var(--accent-primary);
+            border-radius: var(--radius-lg);
+            padding: 3rem;
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto;
+            backdrop-filter: blur(16px);
+            box-shadow: 0 10px 30px -10px var(--accent-glow);
+        }
+
+        .objective-box h2 {
+            font-size: 2.1rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .objective-box p {
+            font-size: 1.15rem;
+            color: var(--text-main);
+            font-style: italic;
+            line-height: 1.8;
+        }
+
+        /* ==========================================================================
+           11. CONTACT SECTION — PROKYDAL CONNECT
+           ========================================================================== */
+        .contact-wrapper {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 3rem;
+            align-items: start;
+        }
+
+        .contact-form {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            padding: 2.2rem;
+            border-radius: var(--radius-lg);
+            backdrop-filter: blur(16px);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 14px 18px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-md);
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 0.95rem;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus, .form-group textarea:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 12px var(--accent-glow);
+        }
+
+        .contact-links {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            padding: 2.2rem;
+            border-radius: var(--radius-lg);
+            backdrop-filter: blur(16px);
+        }
+
+        .contact-links h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+        }
+
+        .contact-links p {
+            color: var(--text-muted);
+            margin-bottom: 1.8rem;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-icons a {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: var(--bg-glass);
+            border: 1px solid var(--border-glass);
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .social-icons a:hover {
+            background: var(--accent-primary);
+            color: #fff;
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px var(--accent-glow);
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--accent-green);
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: var(--transition);
+            z-index: 3000;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* ==========================================================================
+           12. FOOTER — PROKYDAL COPYRIGHT
+           ========================================================================== */
+        .footer {
+            padding: 2.2rem 0;
+            border-top: 1px solid var(--border-glass);
+            background: var(--bg-secondary);
+        }
+
+        .footer-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-brand span {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+            color: var(--text-main);
+        }
+
+        .footer p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .back-to-top {
+            color: var(--accent-primary);
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: var(--transition);
+        }
+
+        .back-to-top:hover {
+            color: var(--accent-secondary);
+        }
+
+        /* ==========================================================================
+           13. RESPONSIVE MEDIA QUERIES
+           ========================================================================== */
+        @media (max-width: 992px) {
+            .hero-container, .about-container, .contact-wrapper {
+                grid-template-columns: 1fr;
+            }
+            .hero-content h1 {
+                font-size: 2.8rem;
+            }
+            .hero-visual {
+                margin-top: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                position: fixed;
+                top: 85px;
+                right: -100%;
+                width: 75%;
+                height: calc(100vh - 85px);
+                background: var(--bg-secondary);
+                flex-direction: column;
+                padding: 3rem 2rem;
+                transition: var(--transition);
+                border-left: 1px solid var(--border-glass);
+            }
+            .nav-links.active {
+                right: 0;
+            }
+            .mobile-toggle {
+                display: block;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .footer-container {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
 <body>
-    <h1>...</h1>
+
+    <!-- Dynamic Particle Canvas Background -->
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- Header / Navigation -->
+    <header class="navbar">
+        <div class="container nav-container">
+            <a href="#hero" class="logo"><i class="fa-solid fa-gamepad"></i> PROKY<span>DAL</span></a>
+            <nav class="nav-links" id="nav-menu">
+                <a href="#about">About</a>
+                <a href="#skills">Skills</a>
+                <a href="#projects">Games</a>
+                <a href="#experience">Experience</a>
+                <a href="#services">Services</a>
+                <a href="#objective">Objective</a>
+                <a href="#contact">Contact</a>
+            </nav>
+            <div class="nav-actions">
+                <button id="theme-toggle" aria-label="Toggle Theme">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                <div class="mobile-toggle" id="menu-toggle">
+                    <i class="fa-solid fa-bars"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero-section">
+        <div class="container hero-container">
+            <div class="hero-content">
+                <div class="badge"><i class="fa-solid fa-rocket"></i> PROKYDAL INDIE STUDIO</div>
+                <h1>Hassan <span>| PROKYDAL</span></h1>
+                <p class="hero-intro">
+                    Lead Indie Game Developer at <strong>PROKYDAL</strong>. Crafting engaging 2D gaming experiences with Godot Engine & GDScript. Transforming complex mechanics into smooth, action-packed gameplay.
+                </p>
+                <div class="hero-btns">
+                    <a href="#projects" class="btn btn-primary"><i class="fa-solid fa-play"></i> View Games</a>
+                    <a href="#contact" class="btn btn-secondary"><i class="fa-solid fa-paper-plane"></i> Contact PROKYDAL</a>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="godot-card">
+                    <div class="godot-icon"><i class="fa-solid fa-cubes-stacked"></i></div>
+                    <div class="godot-tag">PROKYDAL</div>
+                    <div class="godot-subtext">GODOT ENGINE 2D</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Me Section -->
+    <section id="about" class="about-section">
+        <div class="container about-container">
+            <div class="about-image">
+                <div class="avatar-placeholder">
+                    <i class="fa-solid fa-user-ninja"></i>
+                    <h3>Hassan</h3>
+                    <span>PROKYDAL Lead Developer</span>
+                </div>
+            </div>
+            <div class="about-content">
+                <h2>About <span>PROKYDAL</span></h2>
+                <p>
+                    I am the Lead Indie Game Developer at <strong>PROKYDAL</strong>, dedicated to building responsive, mechanics-driven 2D games. With core expertise in the <strong>Godot Engine</strong> and <strong>GDScript</strong>, I specialize in translating dynamic creative concepts into solid code architecture.
+                </p>
+                <p>
+                    Our game development philosophy at <strong>PROKYDAL</strong> centers around precision: crafting exact 2D physics, building scalable custom gameplay systems (from drifting dynamics to projectile pooling), and optimizing logic for high-frame-rate performance.
+                </p>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-number">3+</div>
+                        <div class="stat-label">Full Prototypes</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">100%</div>
+                        <div class="stat-label">Godot Engine 2D</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">60 FPS</div>
+                        <div class="stat-label">PROKYDAL Performance</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="skills-section">
+        <div class="container">
+            <h2 class="section-title">Technical <span>Skills</span></h2>
+            <div class="skills-grid">
+                
+                <div class="skill-card">
+                    <div class="skill-icon"><i class="fa-solid fa-gamepad"></i></div>
+                    <h3>Core Engine & Language</h3>
+                    <ul>
+                        <li>Godot Engine (2D)</li>
+                        <li>GDScript Architecture</li>
+                        <li>Game State Management</li>
+                        <li>UI & Menu Systems</li>
+                    </ul>
+                </div>
+
+                <div class="skill-card">
+                    <div class="skill-icon"><i class="fa-solid fa-car-burst"></i></div>
+                    <h3>Physics & Handling</h3>
+                    <ul>
+                        <li>Vehicle Physics & Drifting</li>
+                        <li>2D RigidBody Dynamics</li>
+                        <li>Gravity & Jump Dynamics</li>
+                        <li>Collision Boundaries</li>
+                    </ul>
+                </div>
+
+                <div class="skill-card">
+                    <div class="skill-icon"><i class="fa-solid fa-crosshair"></i></div>
+                    <h3>Combat & Generation</h3>
+                    <ul>
+                        <li>Shooting & Projectile Systems</li>
+                        <li>Object Pooling</li>
+                        <li>Procedural Generation</li>
+                        <li>Enemy Spawning Logic</li>
+                    </ul>
+                </div>
+
+                <div class="skill-card">
+                    <div class="skill-icon"><i class="fa-solid fa-brain"></i></div>
+                    <h3>Game Systems & AI</h3>
+                    <ul>
+                        <li>Basic Enemy AI Behaviors</li>
+                        <li>Health & Damage Systems</li>
+                        <li>Score & Timer Tracking</li>
+                        <li>Performance Optimization</li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="projects-section">
+        <div class="container">
+            <h2 class="section-title">PROKYDAL <span>Games</span></h2>
+            <div class="projects-grid">
+
+                <!-- Game 1 -->
+                <div class="project-card">
+                    <div class="project-img">
+                        <div class="project-img-demo">
+                            <i class="fa-solid fa-car-side"></i>
+                            <span>2D RACING DEMO</span>
+                        </div>
+                    </div>
+                    <div class="project-info">
+                        <h3>2D Racing Game</h3>
+                        <span class="project-tag">Godot / GDScript</span>
+                        <p>A fast-paced 2D Top-Down arcade racing game featuring responsive controls, drift physics, outer collision boundaries, and lap timing systems.</p>
+                        <button class="project-link" onclick="openGameModal('racing')">Play Canvas Demo <i class="fa-solid fa-circle-play"></i></button>
+                    </div>
+                </div>
+
+                <!-- Game 2 -->
+                <div class="project-card">
+                    <div class="project-img">
+                        <div class="project-img-demo">
+                            <i class="fa-solid fa-shuttle-space"></i>
+                            <span>SPACE FIGHTER DEMO</span>
+                        </div>
+                    </div>
+                    <div class="project-info">
+                        <h3>Space Fighter & Monsters</h3>
+                        <span class="project-tag">Godot / GDScript</span>
+                        <p>An action space shooter featuring projectile shooting mechanics, automated monster wave-spawning logic, collision detection, and explosion impact effects.</p>
+                        <button class="project-link" onclick="openGameModal('space')">Play Canvas Demo <i class="fa-solid fa-circle-play"></i></button>
+                    </div>
+                </div>
+
+                <!-- Game 3 -->
+                <div class="project-card">
+                    <div class="project-img">
+                        <div class="project-img-demo">
+                            <i class="fa-solid fa-crow"></i>
+                            <span>HAPPY FLOOT BIRD</span>
+                        </div>
+                    </div>
+                    <div class="project-info">
+                        <h3>Happy Floot Bird</h3>
+                        <span class="project-tag">Godot / GDScript</span>
+                        <p>A fun 2D arcade endless runner utilizing physics-based jump/falling mechanics, procedural obstacle spawning algorithms, and real-time score UI overlays.</p>
+                        <button class="project-link" onclick="openGameModal('bird')">Play Canvas Demo <i class="fa-solid fa-circle-play"></i></button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section id="experience" class="experience-section">
+        <div class="container">
+            <h2 class="section-title">Development <span>Experience</span></h2>
+            <div class="timeline">
+
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <span class="timeline-date">2024 - Present</span>
+                        <h3>Lead Game Developer</h3>
+                        <h4>PROKYDAL Studio</h4>
+                        <ul>
+                            <li>Engineered 3 full 2D game prototypes focusing on varied mechanics (racing physics, space combat, endless movement).</li>
+                            <li>Wrote clean, modular GDScript architectures to handle complex collisions, UI logic, and wave-spawning algorithms.</li>
+                            <li>Optimized assets and game loops to achieve fixed high frame-rates across desktop environments.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <span class="timeline-date">2023 - 2024</span>
+                        <h3>Freelance 2D Game Developer</h3>
+                        <h4>Independent Contracting</h4>
+                        <ul>
+                            <li>Built procedural generation scripts and custom 2D mechanics for independent client concepts.</li>
+                            <li>Implemented character physics, shooting mechanisms, and custom game menus using Godot Engine.</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services-section">
+        <div class="container">
+            <h2 class="section-title">PROKYDAL <span>Services</span></h2>
+            <div class="services-grid">
+
+                <div class="service-card">
+                    <i class="fa-solid fa-laptop-code service-icon"></i>
+                    <h3>Full 2D Game Development</h3>
+                    <p>Turning core creative concepts and design briefs into complete, playable 2D games using the Godot Engine.</p>
+                </div>
+
+                <div class="service-card">
+                    <i class="fa-solid fa-gears service-icon"></i>
+                    <h3>Game Mechanics Programming</h3>
+                    <p>Designing custom mechanics including vehicle drift physics, gravity systems, enemy AI, and projectile logic.</p>
+                </div>
+
+                <div class="service-card">
+                    <i class="fa-solid fa-bug-slash service-icon"></i>
+                    <h3>GDScript Debugging & Optimization</h3>
+                    <p>Cleaning up legacy codebases, resolving tricky collision bugs, and optimizing script execution for high performance.</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Career Objective Section -->
+    <section id="objective" class="objective-section">
+        <div class="container">
+            <div class="objective-box">
+                <h2>Career <span>Objective</span></h2>
+                <p>
+                    "Driven to expand <strong>PROKYDAL</strong> into a recognized indie game studio by delivering high-impact, polished 2D gaming titles. Seeking to collaborate with forward-thinking developers and studios to push the boundaries of Godot Engine interactive experiences."
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact-section">
+        <div class="container">
+            <h2 class="section-title">Get In <span>Touch</span></h2>
+            <div class="contact-wrapper">
+                <form class="contact-form" id="contact-form">
+                    <div class="form-group">
+                        <input type="text" id="name" placeholder="Your Name" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" id="email" placeholder="Your Email" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea id="message" rows="5" placeholder="Your Message" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i> Send Message to PROKYDAL</button>
+                </form>
+
+                <div class="contact-links">
+                    <h3>Connect with PROKYDAL</h3>
+                    <p>Feel free to reach out for game development projects, commissions, or technical collaborations with <strong>PROKYDAL</strong>.</p>
+                    <div class="social-icons">
+                        <a href="#" target="_blank" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+                        <a href="#" target="_blank" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+                        <a href="#" target="_blank" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+                        <a href="#" target="_blank" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <i class="fa-solid fa-circle-check"></i> <span id="toast-msg">Message sent successfully to PROKYDAL!</span>
+    </div>
+
+    <!-- Interactive Canvas Game Modal -->
+    <div class="modal-overlay" id="game-modal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3 id="modal-title">Game Title</h3>
+                <button class="modal-close" onclick="closeGameModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="game-viewport-wrapper">
+                    <canvas id="game-canvas" width="700" height="393"></canvas>
+                </div>
+                <div class="game-controls-bar">
+                    <div class="controls-info" id="controls-text">Controls: Use Keyboard</div>
+                    <div class="game-actions">
+                        <button class="btn btn-secondary" onclick="restartCurrentGame()"><i class="fa-solid fa-rotate-right"></i> Restart</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer — PROKYDAL BRANDING -->
+    <footer class="footer">
+        <div class="container footer-container">
+            <div class="footer-brand">
+                <span>PROKYDAL</span>
+            </div>
+            <p>&copy; 2026 PROKYDAL. All rights reserved. Designed for Hassan | PROKYDAL Studio.</p>
+            <a href="#hero" class="back-to-top"><i class="fa-solid fa-arrow-up"></i> Top</a>
+        </div>
+    </footer>
+
+    <!-- JavaScript Engine -->
+    <script>
+        /* ==========================================================================
+           1. THEME SWITCHER & NAVIGATION LOGIC — PROKYDAL
+           ========================================================================== */
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const themeIcon = themeToggleBtn.querySelector('i');
+
+        const savedTheme = localStorage.getItem('prokydal-theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+
+        themeToggleBtn.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('prokydal-theme', newTheme);
+            updateThemeIcon(newTheme);
+        });
+
+        function updateThemeIcon(theme) {
+            themeIcon.className = theme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+        }
+
+        // Mobile Menu Toggle
+        const menuToggle = document.getElementById('menu-toggle');
+        const navMenu = document.getElementById('nav-menu');
+
+        menuToggle.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('active');
+            });
+        });
+
+        /* ==========================================================================
+           2. DYNAMIC BACKGROUND CANVAS PARTICLES
+           ========================================================================== */
+        const bgCanvas = document.getElementById('bg-canvas');
+        const bgCtx = bgCanvas.getContext('2d');
+        let particles = [];
+
+        function resizeBgCanvas() {
+            bgCanvas.width = window.innerWidth;
+            bgCanvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeBgCanvas);
+        resizeBgCanvas();
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = Math.random() * bgCanvas.width;
+                this.y = Math.random() * bgCanvas.height;
+                this.size = Math.random() * 2 + 1;
+                this.speedX = (Math.random() - 0.5) * 0.5;
+                this.speedY = (Math.random() - 0.5) * 0.5;
+                this.alpha = Math.random() * 0.5 + 0.2;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x < 0 || this.x > bgCanvas.width || this.y < 0 || this.y > bgCanvas.height) {
+                    this.reset();
+                }
+            }
+            draw() {
+                bgCtx.fillStyle = `rgba(99, 102, 241, ${this.alpha})`;
+                bgCtx.beginPath();
+                bgCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                bgCtx.fill();
+            }
+        }
+
+        for (let i = 0; i < 45; i++) {
+            particles.push(new Particle());
+        }
+
+        function animateBg() {
+            bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animateBg);
+        }
+        animateBg();
+
+        /* ==========================================================================
+           3. CONTACT FORM & TOAST
+           ========================================================================== */
+        const contactForm = document.getElementById('contact-form');
+        const toast = document.getElementById('toast');
+
+        contactForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            toast.classList.add('show');
+            contactForm.reset();
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3500);
+        });
+
+        /* ==========================================================================
+           4. PLAYABLE HTML5 CANVAS MINI-GAMES ENGINE
+           ========================================================================== */
+        const modal = document.getElementById('game-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const controlsText = document.getElementById('controls-text');
+        const gameCanvas = document.getElementById('game-canvas');
+        const ctx = gameCanvas.getContext('2d');
+
+        let currentGame = null;
+        let animationFrameId = null;
+        let keys = {};
+
+        window.addEventListener('keydown', (e) => { keys[e.code] = true; });
+        window.addEventListener('keyup', (e) => { keys[e.code] = false; });
+
+        function openGameModal(gameType) {
+            modal.classList.add('active');
+            currentGame = gameType;
+            if (gameType === 'racing') {
+                modalTitle.innerText = 'PROKYDAL 2D Racing Drift Demo';
+                controlsText.innerHTML = 'Controls: <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or <kbd>Arrow Keys</kbd> to Drive & Drift';
+                initRacingGame();
+            } else if (gameType === 'space') {
+                modalTitle.innerText = 'PROKYDAL Space Fighter & Monsters';
+                controlsText.innerHTML = 'Controls: <kbd>←</kbd><kbd>→</kbd> Move | <kbd>Space</kbd> Shoot Laser';
+                initSpaceGame();
+            } else if (gameType === 'bird') {
+                modalTitle.innerText = 'PROKYDAL Happy Floot Bird';
+                controlsText.innerHTML = 'Controls: <kbd>Space</kbd> or <kbd>Click</kbd> to Flap / Jump';
+                initBirdGame();
+            }
+        }
+
+        function closeGameModal() {
+            modal.classList.remove('active');
+            if (animationFrameId) cancelAnimationFrame(animationFrameId);
+            currentGame = null;
+        }
+
+        function restartCurrentGame() {
+            if (currentGame) openGameModal(currentGame);
+        }
+
+        /* --------------------------------------------------------------------------
+           GAME 1: 2D RACING GAME (TOP-DOWN DRIFT SIMULATOR)
+           -------------------------------------------------------------------------- */
+        let car, driftTrails, racingScore;
+
+        function initRacingGame() {
+            car = {
+                x: 350,
+                y: 200,
+                angle: 0,
+                speed: 0,
+                maxSpeed: 5.5,
+                accel: 0.15,
+                friction: 0.96,
+                turnSpeed: 0.065
+            };
+            driftTrails = [];
+            racingScore = 0;
+
+            function gameLoop() {
+                // Controls
+                if (keys['KeyW'] || keys['ArrowUp']) {
+                    if (car.speed < car.maxSpeed) car.speed += car.accel;
+                }
+                if (keys['KeyS'] || keys['ArrowDown']) {
+                    if (car.speed > -car.maxSpeed / 2) car.speed -= car.accel;
+                }
+                if (keys['KeyA'] || keys['ArrowLeft']) {
+                    car.angle -= car.turnSpeed * (car.speed / car.maxSpeed);
+                }
+                if (keys['KeyD'] || keys['ArrowRight']) {
+                    car.angle += car.turnSpeed * (car.speed / car.maxSpeed);
+                }
+
+                car.speed *= car.friction;
+                car.x += Math.cos(car.angle) * car.speed;
+                car.y += Math.sin(car.angle) * car.speed;
+
+                // Boundaries
+                if (car.x < 20 || car.x > 680 || car.y < 20 || car.y > 373) {
+                    car.speed = -car.speed * 0.5;
+                }
+
+                // Drift trail particle
+                if (Math.abs(car.speed) > 2) {
+                    driftTrails.push({ x: car.x, y: car.y, alpha: 0.8 });
+                    racingScore += 2;
+                }
+
+                // Render Track
+                ctx.fillStyle = '#1e293b';
+                ctx.fillRect(0, 0, 700, 393);
+
+                // Draw track borders
+                ctx.strokeStyle = '#6366f1';
+                ctx.lineWidth = 12;
+                ctx.strokeRect(15, 15, 670, 363);
+
+                // Render drift trails
+                driftTrails.forEach((t, i) => {
+                    ctx.fillStyle = `rgba(6, 182, 212, ${t.alpha})`;
+                    ctx.fillRect(t.x, t.y, 4, 4);
+                    t.alpha -= 0.02;
+                    if (t.alpha <= 0) driftTrails.splice(i, 1);
+                });
+
+                // Render Car
+                ctx.save();
+                ctx.translate(car.x, car.y);
+                ctx.rotate(car.angle);
+                ctx.fillStyle = '#10b981';
+                ctx.fillRect(-15, -8, 30, 16);
+                ctx.fillStyle = '#0f172a';
+                ctx.fillRect(-5, -6, 10, 12);
+                ctx.restore();
+
+                // HUD
+                ctx.fillStyle = '#fff';
+                ctx.font = '14px Poppins';
+                ctx.fillText(`PROKYDAL Drift Score: ${racingScore}`, 30, 45);
+                ctx.fillText(`Speed: ${Math.round(car.speed * 20)} MPH`, 30, 65);
+
+                if (currentGame === 'racing') {
+                    animationFrameId = requestAnimationFrame(gameLoop);
+                }
+            }
+            gameLoop();
+        }
+
+        /* --------------------------------------------------------------------------
+           GAME 2: SPACE FIGHTER & MONSTERS (RETRO SHOOTER)
+           -------------------------------------------------------------------------- */
+        let player, lasers, monsters, spaceScore, spawnTimer;
+
+        function initSpaceGame() {
+            player = { x: 350, y: 340, width: 32, height: 24, speed: 6 };
+            lasers = [];
+            monsters = [];
+            spaceScore = 0;
+            spawnTimer = 0;
+
+            let canShoot = true;
+
+            function gameLoop() {
+                if (keys['ArrowLeft'] || keys['KeyA']) {
+                    if (player.x > 30) player.x -= player.speed;
+                }
+                if (keys['ArrowRight'] || keys['KeyD']) {
+                    if (player.x < 670) player.x += player.speed;
+                }
+                if (keys['Space']) {
+                    if (canShoot) {
+                        lasers.push({ x: player.x, y: player.y - 15, speed: 8 });
+                        canShoot = false;
+                        setTimeout(() => canShoot = true, 180);
+                    }
+                }
+
+                // Spawn Monsters
+                spawnTimer++;
+                if (spawnTimer % 45 === 0) {
+                    monsters.push({
+                        x: Math.random() * 640 + 30,
+                        y: -20,
+                        size: 24,
+                        speed: Math.random() * 2 + 1.5
+                    });
+                }
+
+                // Background
+                ctx.fillStyle = '#080c14';
+                ctx.fillRect(0, 0, 700, 393);
+
+                // Draw Player
+                ctx.fillStyle = '#06b6d4';
+                ctx.beginPath();
+                ctx.moveTo(player.x, player.y - 12);
+                ctx.lineTo(player.x - 16, player.y + 12);
+                ctx.lineTo(player.x + 16, player.y + 12);
+                ctx.closePath();
+                ctx.fill();
+
+                // Update & Draw Lasers
+                lasers.forEach((l, li) => {
+                    l.y -= l.speed;
+                    ctx.fillStyle = '#6366f1';
+                    ctx.fillRect(l.x - 3, l.y, 6, 12);
+                    if (l.y < 0) lasers.splice(li, 1);
+                });
+
+                // Update & Draw Monsters
+                monsters.forEach((m, mi) => {
+                    m.y += m.speed;
+                    ctx.fillStyle = '#ef4444';
+                    ctx.beginPath();
+                    ctx.arc(m.x, m.y, m.size / 2, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Collision check with lasers
+                    lasers.forEach((l, li) => {
+                        let dist = Math.hypot(l.x - m.x, l.y - m.y);
+                        if (dist < m.size / 2 + 6) {
+                            monsters.splice(mi, 1);
+                            lasers.splice(li, 1);
+                            spaceScore += 100;
+                        }
+                    });
+                });
+
+                // HUD
+                ctx.fillStyle = '#fff';
+                ctx.font = '16px Poppins';
+                ctx.fillText(`PROKYDAL Score: ${spaceScore}`, 20, 35);
+
+                if (currentGame === 'space') {
+                    animationFrameId = requestAnimationFrame(gameLoop);
+                }
+            }
+            gameLoop();
+        }
+
+        /* --------------------------------------------------------------------------
+           GAME 3: HAPPY FLOOT BIRD (PHYSICS RUNNER)
+           -------------------------------------------------------------------------- */
+        let bird, pipes, birdScore, birdGameOver;
+
+        function initBirdGame() {
+            bird = { x: 120, y: 200, velocity: 0, gravity: 0.45, jump: -7.5, size: 16 };
+            pipes = [];
+            birdScore = 0;
+            birdGameOver = false;
+
+            let frame = 0;
+
+            function flap() {
+                if (!birdGameOver) {
+                    bird.velocity = bird.jump;
+                }
+            }
+
+            window.onclick = (e) => {
+                if (currentGame === 'bird' && e.target.id === 'game-canvas') flap();
+            };
+
+            function gameLoop() {
+                if (keys['Space']) {
+                    flap();
+                    keys['Space'] = false;
+                }
+
+                if (!birdGameOver) {
+                    bird.velocity += bird.gravity;
+                    bird.y += bird.velocity;
+
+                    // Ground & Ceiling collision
+                    if (bird.y > 370 || bird.y < 10) birdGameOver = true;
+
+                    // Spawn Pipes
+                    frame++;
+                    if (frame % 90 === 0) {
+                        let gap = 110;
+                        let topHeight = Math.random() * 180 + 30;
+                        pipes.push({
+                            x: 700,
+                            top: topHeight,
+                            bottom: topHeight + gap,
+                            passed: false
+                        });
+                    }
+                }
+
+                // Render Background
+                ctx.fillStyle = '#0f172a';
+                ctx.fillRect(0, 0, 700, 393);
+
+                // Update & Render Pipes
+                pipes.forEach((p, i) => {
+                    if (!birdGameOver) p.x -= 3;
+
+                    ctx.fillStyle = '#10b981';
+                    ctx.fillRect(p.x, 0, 45, p.top);
+                    ctx.fillRect(p.x, p.bottom, 45, 393 - p.bottom);
+
+                    // Check Collision
+                    if (bird.x + bird.size > p.x && bird.x - bird.size < p.x + 45) {
+                        if (bird.y - bird.size < p.top || bird.y + bird.size > p.bottom) {
+                            birdGameOver = true;
+                        }
+                    }
+
+                    // Score Increment
+                    if (!p.passed && p.x < bird.x) {
+                        p.passed = true;
+                        birdScore++;
+                    }
+                });
+
+                // Render Bird
+                ctx.fillStyle = '#f59e0b';
+                ctx.beginPath();
+                ctx.arc(bird.x, bird.y, bird.size, 0, Math.PI * 2);
+                ctx.fill();
+
+                // HUD
+                ctx.fillStyle = '#fff';
+                ctx.font = '20px Poppins';
+                ctx.fillText(`Score: ${birdScore}`, 30, 40);
+
+                if (birdGameOver) {
+                    ctx.fillStyle = 'rgba(0, 0, 0, 0.75)';
+                    ctx.fillRect(0, 0, 700, 393);
+                    ctx.fillStyle = '#ef4444';
+                    ctx.font = '28px Outfit';
+                    ctx.fillText('GAME OVER', 270, 180);
+                    ctx.fillStyle = '#fff';
+                    ctx.font = '16px Poppins';
+                    ctx.fillText('Click Restart to Play Again', 240, 220);
+                }
+
+                if (currentGame === 'bird') {
+                    animationFrameId = requestAnimationFrame(gameLoop);
+                }
+            }
+            gameLoop();
+        }
+    </script>
 </body>
 </html>
